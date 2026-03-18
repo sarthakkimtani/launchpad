@@ -1,4 +1,7 @@
 import Fastify from "fastify";
+import fastifyCors from "@fastify/cors";
+
+import { betterAuthHandler } from "@/lib/auth/handler";
 
 const app = Fastify({
   logger: {
@@ -12,9 +15,15 @@ const app = Fastify({
   },
 });
 
-app.get("/", async () => {
-  return { message: "Hello Fastify 🚀" };
+app.register(fastifyCors, {
+  origin: process.env.CLIENT_ORIGIN,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
+  maxAge: 86400,
 });
+
+app.route({ method: ["GET", "POST"], url: "/auth/*", handler: betterAuthHandler });
 
 const start = async () => {
   try {
