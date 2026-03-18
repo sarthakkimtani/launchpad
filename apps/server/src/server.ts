@@ -1,8 +1,18 @@
 import Fastify from "fastify";
 
-const app = Fastify({ logger: true });
+const app = Fastify({
+  logger: {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        translateTime: "HH:MM:ss",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+});
 
-app.get("/", async (request, reply) => {
+app.get("/", async () => {
   return { message: "Hello Fastify 🚀" };
 });
 
