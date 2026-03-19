@@ -1,5 +1,5 @@
-import Fastify from "fastify";
 import fastifyCors from "@fastify/cors";
+import Fastify from "fastify";
 
 import { betterAuthHandler } from "@/lib/auth/handler";
 
