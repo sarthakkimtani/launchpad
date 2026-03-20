@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 
+import { Auth } from "@/components/pages/auth";
+
 export const metadata: Metadata = {
   title: "Authenticate to Launchpad",
 };
 
-export default function AuthPage() {
-  return <h1 className="text-4xl">Login</h1>;
+export default async function AuthPage() {
+  return <Auth />;
 }
