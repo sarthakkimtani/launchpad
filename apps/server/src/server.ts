@@ -2,6 +2,7 @@ import fastifyCors from "@fastify/cors";
 import Fastify from "fastify";
 
 import { betterAuthHandler } from "@/lib/auth/handler";
+import integrationRoutes from "@/routes/integrations";
 
 const app = Fastify({
   logger: {
@@ -24,6 +25,7 @@ app.register(fastifyCors, {
 });
 
 app.route({ method: ["GET", "POST"], url: "/auth/*", handler: betterAuthHandler });
+app.register(integrationRoutes, { prefix: "/integrations" });
 
 const start = async () => {
   try {

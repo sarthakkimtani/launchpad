@@ -25,3 +25,5 @@ export const auth = betterAuth({
     schema,
   }),
 });
+
+export type Session = typeof auth.$Infer.Session;

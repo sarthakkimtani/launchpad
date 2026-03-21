@@ -1,16 +1,14 @@
-import { FastifyRequest, FastifyReply } from "fastify";
+import { fromNodeHeaders } from "better-auth/node";
+import { FastifyReply, FastifyRequest } from "fastify";
 
-import { auth } from ".";
+import { auth } from "@/lib/auth";
 
 export const betterAuthHandler = async (request: FastifyRequest, reply: FastifyReply) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`);
 
     // Convert Fastify headers to standard Headers object
-    const headers = new Headers();
-    Object.entries(request.headers).forEach(([key, value]) => {
-      if (value) headers.append(key, value.toString());
-    });
+    const headers = fromNodeHeaders(request.headers);
 
     // Create Fetch API-compatible request
     const req = new Request(url.toString(), {

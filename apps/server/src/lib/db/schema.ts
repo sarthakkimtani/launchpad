@@ -1,5 +1,17 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  jsonb,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
+
+export const integrationProvider = pgEnum("provider", ["cloudflare", "vercel"]);
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -73,9 +85,25 @@ export const verification = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
+export const integration = pgTable(
+  "integration",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id").notNull(),
+    provider: integrationProvider("provider").notNull(),
+    accessToken: text("access_token").notNull(),
+    externalAccountId: text("external_account_id"),
+    metadata: jsonb("metadata").default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex("user_provider_unique").on(table.userId, table.provider)],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  integrations: many(integration),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
